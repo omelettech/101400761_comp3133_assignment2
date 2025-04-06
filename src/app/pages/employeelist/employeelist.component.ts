@@ -9,8 +9,8 @@ import { CommonModule } from '@angular/common';
   selector: 'app-employee-list',
   standalone: true,
   imports: [CommonModule, RouterLink],
-  templateUrl: './employee-list.component.html',
-  styleUrls: ['./employee-list.component.css'],
+  templateUrl: './employeelist.component.html',
+  styleUrls: ['./employeelist.component.css'],
 })
 export class EmployeeListComponent implements OnInit, OnDestroy {
   employees: Employee[] | null = null;
@@ -51,6 +51,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
         this.loading = false;
       },
     });
+    console.log(this.employees)
   }
 
   deleteEmployee(id: string): void {

@@ -1,9 +1,14 @@
 export interface Employee {
   id: string;
-  firstName: string;
-  lastName: string;
+  firstname: string;
+  lastname: string;
   email: string;
-  department: string;
   position: string;
-  profilePicture?: string; // Optional
+  salary: number;
+  department: string;
+  date_of_joining: string;
+}
+export interface EmployeeSaveInput {
+  employeeData: Omit<Employee, "id">;
+  profilePictureFile?: File | null;
 }

@@ -1,1 +1,116 @@
-<p>employeeform works!</p>
+<div class="container">
+  <h2>{{ isAddMode ? 'Add Employee' : 'Edit Employee' }}</h2>
+
+  <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="firstname">First Name</label>
+      <input
+        id="firstname"
+        formControlName="firstname"
+        type="text"
+        class="form-control"
+        placeholder="Enter first name"
+        required
+      />
+      <div *ngIf="employeeForm.get('firstname')?.invalid && employeeForm.get('firstname')?.touched" class="text-danger">
+        First name is required.
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="lastname">Last Name</label>
+      <input
+        id="lastname"
+        formControlName="lastname"
+        type="text"
+        class="form-control"
+        placeholder="Enter last name"
+        required
+      />
+      <div *ngIf="employeeForm.get('lastname')?.invalid && employeeForm.get('lastname')?.touched" class="text-danger">
+        Last name is required.
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="gender">Date of Joining</label>
+      <input
+        id="gender"
+        formControlName="gender"
+        type="text"
+        class="form-control"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input
+        id="email"
+        formControlName="email"
+        type="email"
+        class="form-control"
+        placeholder="Enter email"
+        required
+      />
+      <div *ngIf="employeeForm.get('email')?.invalid && employeeForm.get('email')?.touched" class="text-danger">
+        Please enter a valid email.
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="position">Position</label>
+      <input
+        id="position"
+        formControlName="position"
+        type="text"
+        class="form-control"
+        placeholder="Enter position"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="salary">Salary</label>
+      <input
+        id="salary"
+        formControlName="salary"
+        type="number"
+        class="form-control"
+        placeholder="Enter salary"
+        required
+      />
+      <div *ngIf="employeeForm.get('salary')?.invalid && employeeForm.get('salary')?.touched" class="text-danger">
+        Salary must be a positive number.
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="department">Department</label>
+      <input
+        id="department"
+        formControlName="department"
+        type="text"
+        class="form-control"
+        placeholder="Enter department"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="date_of_joining">Date of Joining</label>
+      <input
+        id="date_of_joining"
+        formControlName="date_of_joining"
+        type="date"
+        class="form-control"
+        required
+      />
+    </div>
+
+
+
+    <button type="submit" [disabled]="employeeForm.invalid" class="btn btn-primary">
+      {{ isAddMode ? 'Add' : 'Update' }} Employee
+    </button>
+  </form>
+</div>

@@ -1,5 +1,5 @@
 <h2>Employee List</h2>
-<button routerLink="/employees/add">Add New Employee</button>
+<button routerLink="/employee/add">Add New Employee</button>
 
 <div *ngIf="loading">Loading employees...</div>
 <div *ngIf="error">Error loading employees: {{ error }}</div>
@@ -18,8 +18,8 @@
   <tbody>
   <tr *ngFor="let employee of employees">
     <td>{{ employee.id }}</td>
-    <td>{{ employee.firstName }}</td>
-    <td>{{ employee.lastName }}</td>
+    <td>{{ employee.firstname }}</td>
+    <td>{{ employee.lastname}}</td>
     <td>{{ employee.department }}</td>
     <td>{{ employee.position }}</td>
     <td>

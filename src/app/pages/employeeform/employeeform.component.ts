@@ -10,8 +10,8 @@ import { CommonModule } from '@angular/common';
   selector: 'app-employee-form',
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule],
-  templateUrl: './employee-form.component.html',
-  styleUrls: ['./employee-form.component.css'],
+  templateUrl: './employeeform.component.html',
+  styleUrls: ['./employeeform.component.css'],
 })
 export class EmployeeFormComponent implements OnInit, OnDestroy {
   employeeForm: FormGroup;
@@ -22,7 +22,6 @@ export class EmployeeFormComponent implements OnInit, OnDestroy {
   successMessage: string | null = null;
   selectedFile: File | null = null;
   previewImage: string | null = null;
-  profilePictureError: string | null = null;
 
   private routeSubscription?: Subscription;
   private employeeSubscription?: Subscription;
@@ -35,12 +34,14 @@ export class EmployeeFormComponent implements OnInit, OnDestroy {
     private router: Router
   ) {
     this.employeeForm = this.fb.group({
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
+      firstname: ['', Validators.required],
+      lastname: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      department: ['', Validators.required],
+      gender:["",Validators.required],
       position: ['', Validators.required],
-      // profilePicture: [null] // We'll handle file separately
+      salary: ['', [Validators.required, Validators.min(0)]],
+      department: ['', Validators.required],
+      date_of_joining: ['', Validators.required],
     });
   }
 
@@ -54,7 +55,6 @@ export class EmployeeFormComponent implements OnInit, OnDestroy {
         this.employeeSubscription = this.employeeService.getEmployeeById(this.id!).subscribe({
           next: (employee) => {
             this.employeeForm.patchValue(employee);
-            this.previewImage = employee.profilePicture || null;
             this.loading = false;
           },
           error: (err) => {
@@ -82,12 +82,10 @@ export class EmployeeFormComponent implements OnInit, OnDestroy {
   onFileChange(event: any): void {
     this.selectedFile = event.target.files[0];
     this.previewImage = null;
-    this.profilePictureError = null;
 
     if (this.selectedFile) {
       const allowedTypes = ['image/png', 'image/jpeg', 'image/gif'];
       if (!allowedTypes.includes(this.selectedFile.type)) {
-        this.profilePictureError = 'Invalid file type. Only PNG, JPEG, and GIF are allowed.';
         this.selectedFile = null;
         return;
       }
@@ -100,17 +98,16 @@ export class EmployeeFormComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(): void {
-    if (this.employeeForm.valid && !this.loading && !this.profilePictureError) {
+    if (this.employeeForm.valid && !this.loading ) {
+      console.log("Hello")
       this.loading = true;
       this.error = null;
       this.successMessage = null;
       const employeeData = this.employeeForm.value;
+      console.log(typeof employeeData)
+      console.log(employeeData)
 
-      const saveObservable = this.isAddMode
-        ? this.employeeService.addEmployee(employeeData, this.selectedFile)
-        : this.employeeService.updateEmployee(this.id!, employeeData, this.selectedFile);
-
-      this.saveSubscription = saveObservable.subscribe({
+       this.employeeService.addEmployee(employeeData).subscribe({
         next: (employee) => {
           this.successMessage = `Employee ${this.isAddMode ? 'added' : 'updated'} successfully!`;
           this.loading = false;

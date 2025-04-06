@@ -11,125 +11,107 @@ export class EmployeeService {
   constructor(private apollo: Apollo) {}
 
   getAllEmployees(): Observable<Employee[]> {
-    return this.apollo.query<{ employees: Employee[] }>({
+    return this.apollo.query<{ getAllEmployees: Employee[] }>({
       query: gql`
-        query GetAllEmployees {
-          employees {
+        query {
+          getAllEmployees {
             id
-            firstName
-            lastName
+            firstname
+            lastname
             email
-            department
             position
-            profilePicture
+            salary
+            department
+            date_of_joining
           }
         }
       `,
-    }).pipe(map(result => result.data.employees));
+    }).pipe(map(result => result.data.getAllEmployees));
   }
 
-  addEmployee(employee: Omit<Employee, "id">, profilePictureFile?: File | null): Observable<Employee> {
+  addEmployee(employee: Omit<Employee, "id">): Observable<Employee> {
+    console.log("employee",employee)
     const mutation = gql`
-      mutation AddEmployee($employee: EmployeeInput!, $profilePicture: Upload) {
-        addEmployee(employee: $employee, profilePicture: $profilePicture) {
-          id
-          firstName
-          lastName
-          email
-          department
-          position
-          profilePicture
-        }
-      }
+mutation AddEmployee($firstname: String!, $lastname: String!, $email: String!, $gender: String!, $salary: Float!, $dateOfJoining: String!, $department: String!,$position:String!) {
+  addEmployee(firstname: $firstname, lastname: $lastname, email: $email, gender: $gender, salary: $salary, date_of_joining: $dateOfJoining, department: $department, position:$position) {
+    id
+    firstname
+    lastname
+    email
+    gender
+    position
+    salary
+    department
+    date_of_joining
+  }
+}
+
     `;
-    return this.apollo.mutate<{ addEmployee: Employee }>(
-      {
-        mutation,
-        variables: {
-          employee,
-          profilePicture: profilePictureFile,
-        },
-        context: {
-          useMultipart: true, // Important for file uploads
-        },
+
+    const { firstname, lastname, email,  salary, date_of_joining, department, position } = employee;
+
+    return this.apollo.mutate<{ addEmployee: Employee }>({
+      mutation,
+      variables: {
+        firstname,
+        lastname,
+        email,
+        salary,
+      date_of_joining,
+        department,
+        position
       }
-    ).pipe(map(result => result.data!.addEmployee));
+    }).pipe(map(result => result.data!.addEmployee));
   }
 
-  getEmployeeById(id: string): Observable<Employee> {
-    return this.apollo.query<{ employee: Employee }>({
+  getEmployeeById(eid: string): Observable<Employee> {
+    return this.apollo.query<{ searchEmployeeById: Employee }>({
       query: gql`
-        query GetEmployeeById($id: ID!) {
-          employee(id: $id) {
+        query GetEmployeeById($eid: ID!) {
+          searchEmployeeById(eid: $eid) {
             id
-            firstName
-            lastName
+            firstname
+            lastname
             email
-            department
             position
-            profilePicture
+            salary
+            department
+            date_of_joining
           }
         }
       `,
-      variables: { id },
-    }).pipe(map(result => result.data!.employee));
+      variables: { eid },
+    }).pipe(map(result => result.data.searchEmployeeById));
   }
 
-  updateEmployee(id: string, employee: Omit<Employee, "id">, profilePictureFile?: File | null): Observable<Employee> {
-    const mutation = gql`
-      mutation UpdateEmployee($id: ID!, $employee: EmployeeInput!, $profilePicture: Upload) {
-        updateEmployee(id: $id, employee: $employee, profilePicture: $profilePicture) {
-          id
-          firstName
-          lastName
-          email
-          department
-          position
-          profilePicture
-        }
-      }
-    `;
-    return this.apollo.mutate<{ updateEmployee: Employee }>(
-      {
-        mutation,
-        variables: {
-          id,
-          employee,
-          profilePicture: profilePictureFile,
-        },
-        context: {
-          useMultipart: true,
-        },
-      }
-    ).pipe(map(result => result.data!.updateEmployee));
-  }
-
-  deleteEmployee(id: string): Observable<boolean> {
+  deleteEmployee(eid: string): Observable<boolean> {
     return this.apollo.mutate<{ deleteEmployee: boolean }>({
       mutation: gql`
-        mutation DeleteEmployee($id: ID!) {
-          deleteEmployee(id: $id)
+        mutation DeleteEmployee($eid: ID!) {
+          deleteEmployee(eid: $eid)
         }
       `,
-      variables: { id },
+      variables: { eid },
     }).pipe(map(result => result.data!.deleteEmployee));
   }
-  searchEmployees(criteria: { department?: string; position?: string }): Observable<Employee[]> {
-    return this.apollo.query<{ searchEmployees: Employee[] }>({
+
+  searchEmployees(criteria: { designation?: string; department?: string }): Observable<Employee[]> {
+    return this.apollo.query<{ searchEmployeesByDesignationOrDepartment: Employee[] }>({
       query: gql`
-      query SearchEmployees($department: String, $position: String) {
-        searchEmployees(department: $department, position: $position) {
-          id
-          firstName
-          lastName
-          email
-          department
-          position
-          profilePicture
+        query SearchEmployees($designation: String, $department: String) {
+          searchEmployeesByDesignationOrDepartment(designation: $designation, department: $department) {
+            id
+            firstname
+            lastname
+            email
+            position
+            salary
+            department
+            date_of_joining
+          }
         }
-      }
-    `,
+      `,
       variables: criteria,
-    }).pipe(map(result => result.data.searchEmployees));
+    }).pipe(map(result => result.data.searchEmployeesByDesignationOrDepartment));
   }
 }
