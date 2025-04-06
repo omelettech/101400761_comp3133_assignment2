@@ -1,24 +1,45 @@
-import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+// login.component.ts
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms'; // Import ReactiveFormsModule
+import { AuthService } from '../../services/AuthService';
+import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common'; // Import CommonModule if you use *ngIf, *ngFor, etc.
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.css'],
+  standalone: true,
+  imports: [ReactiveFormsModule, CommonModule], // Add ReactiveFormsModule and CommonModule
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   loginForm: FormGroup;
 
-  constructor(private fb: FormBuilder) {
-    this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required]]
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router
+  ) {
+    this.loginForm = this.fb.group({ // Initialization in the constructor
+      username: [''],
+      password: ['']
     });
   }
 
-  onLogin() {
+  ngOnInit(): void {
+    this.loginForm = this.fb.group({
+      username: ['', Validators.required],
+      password: ['', Validators.required]
+    });
+  }
+
+  onSubmit() {
     if (this.loginForm.valid) {
-      console.log('Logging in with:', this.loginForm.value);
+      this.authService.login(this.loginForm.value).subscribe(response => {
+        // Assume response contains a token
+        this.authService.setToken(response.token);
+        this.router.navigate(['/employees']);
+      });
     }
   }
 }

@@ -18,6 +18,11 @@
     "target": "ES2022",
     "module": "ES2022"
   },
+  "lib": [
+    "es2018",
+    "dom"
+  ],
+  "allowSyntheticDefaultImports": true,
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,

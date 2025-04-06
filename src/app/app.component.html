@@ -1,1 +1,12 @@
-<a routerLink="/login">Go to My New Page</a>
+<!--<button routerLink="/signup" class="w-full bg-gray-500 text-white p-2 rounded-md hover:bg-gray-600 mt-2">-->
+<!--  Sign Up-->
+<!--</button> &lt;!&ndash; ✅ Button to navigate &ndash;&gt;
+-->
+<nav>
+  <ul>
+    <li><a routerLink="/first-component" routerLinkActive="active" ariaCurrentWhenActive="page">First Component</a></li>
+    <li><a routerLink="/second-component" routerLinkActive="active" ariaCurrentWhenActive="page">Second Component</a>
+    </li>
+  </ul>
+</nav>
+<router-outlet></router-outlet>
